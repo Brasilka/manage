@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: hr-api
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn hr_api_project.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: hr_api_project.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
