@@ -136,14 +136,16 @@ def start_time_entry(request):
     matched = False
     for shift in today_shifts:
         start_window = (datetime.combine(today, shift.start_time) - timedelta(minutes=15)).time()
-        end_window = (datetime.combine(today, shift.start_time) + timedelta(minutes=15)).time()
-            if current_time >= start_window:
-                matched = True
-
+        end_limit = shift.end_time  # До конца смены
+    
+        if start_window <= current_time <= end_limit:
+            matched = True
             break
 
+
+
     if not matched:
-        raise HttpError(400, "Смену можно начать только за 15 минут до или после запланированного времени")
+        raise HttpError(400, "Смену можно начать не раньше чем за 15 минут до её начала и не позже её окончания")
 
     entry = TimeEntry.objects.create(employee=employee)
     return entry
